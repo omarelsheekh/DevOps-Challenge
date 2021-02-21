@@ -1,0 +1,9 @@
+---
+
+- hosts: DBMasterVM
+  remote_user: azureuser
+  gather_facts: no
+  become: yes
+  roles:
+    - install-postgres
+    - postgres-master

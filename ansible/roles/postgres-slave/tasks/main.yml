@@ -1,0 +1,40 @@
+---
+
+- name: Make sure pexpect is installed
+  pip:
+      name: pexpect
+      state: present
+
+- name: stop postgresql-12 service
+  systemd:
+      name: postgresql-12
+      state: stopped
+# - name: backup original data
+#   ansible.builtin.copy:
+#       src: /var/lib/pgsql/12/data
+#       dest: /var/lib/pgsql/12/data_origin
+#       owner: postgres
+#       group: postgres
+#       remote_src: yes
+
+- name: remove original data
+  ansible.builtin.file:
+    path: /var/lib/pgsql/12/data/
+    state: "{{ item }}"
+    owner: postgres
+    group: postgres
+  with_items:
+      # - absent
+      - directory
+
+- name: Connect to master db
+  expect:
+      echo: yes
+      command: sudo -u postgres -s pg_basebackup -h {{ dbmaster_vm_private_ip }} -D /var/lib/pgsql/12/data -U replicator -P -v  -R -X stream -C -S pgstandby1
+      responses:
+          (?i)password: "{{ db_replicapass }}"
+
+- name: start postgresql-12 service
+  systemd:
+      name: postgresql-12
+      state: started

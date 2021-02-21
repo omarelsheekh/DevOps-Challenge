@@ -1,0 +1,48 @@
+---
+
+- name: install yum-utils
+  yum:
+      name: yum-utils
+      state: latest
+
+- name: Add docker repository
+  command: yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+
+- name: install docker
+  yum:
+    name: "{{ item }}"
+  with_items:
+    - docker-ce
+    - docker-ce-cli
+    - containerd.io
+
+- name: Make sure docker is running
+  ansible.builtin.systemd:
+      state: started
+      name: docker
+
+- name: Copy app files
+  ansible.builtin.copy:
+      src: ../app/
+      dest: /home/azureuser/app/
+
+- name: build docker image
+  command: docker build -t halan-app /home/azureuser/app/
+
+- name: Make sure docker SDK is installed
+  pip:
+      name: docker
+      state: present
+      
+- name: run docker container
+  docker_container:
+      name: myapplication
+      image: halan-app
+      restart: yes
+      ports:
+      - "80:5000"
+      env:
+        db_ip: "{{ db_ip }}" 
+        db_name: "{{ db_name }}" 
+        db_username: "{{ db_username }}" 
+        db_userpass: "{{ db_userpass }}" 

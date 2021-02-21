@@ -1,0 +1,51 @@
+---
+
+- name: init db
+  command: /usr/pgsql-12/bin/postgresql-12-setup initdb
+
+- name: enable and start postgresql-12 service
+  systemd:
+      name: postgresql-12
+      state: started
+      enabled: True
+
+- name: Make sure pexpect is installed
+  pip:
+      name: pexpect
+      state: present    
+      
+- name: Create a new database
+  command: sudo -u postgres -s psql -c "create database {{ db_name }};"
+  ignore_errors: yes
+
+- name: Create user and set user's password with no expire date
+  command: sudo -u postgres -s psql -c "CREATE USER {{ db_username }} WITH PASSWORD '{{ db_userpass }}';"
+  ignore_errors: yes
+
+- name: make server listen to any adddree
+  command: sudo -u postgres -s psql -c "ALTER SYSTEM SET listen_addresses to '*'"
+  ignore_errors: yes
+
+- name: Create a replica user
+  ignore_errors: yes
+  expect:
+      echo: yes
+      command: sudo -u postgres -s createuser --replication -P -e replicator
+      responses:
+          (?i)password: "{{ db_replicapass }}"
+          (?i)again: "{{ db_replicapass }}"
+
+- name: add a lines to the conf file
+  lineinfile:
+      dest: /var/lib/pgsql/12/data/pg_hba.conf
+      line: host {{ db_name }} {{ db_username }} {{ subnet_prefix }} password
+
+- name: add a second lines to the conf file
+  lineinfile:
+      dest: /var/lib/pgsql/12/data/pg_hba.conf
+      line: host replication replicator {{ dbslave_vm_private_ip }}/24 md5
+
+- name: restart postgresql-12 service
+  systemd:
+      name: postgresql-12
+      state: restarted
