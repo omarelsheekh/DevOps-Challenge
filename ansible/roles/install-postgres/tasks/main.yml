@@ -17,3 +17,8 @@
   with_items:
       - postgresql12
       - postgresql12-server
+
+- name: Make sure pexpect is installed
+  pip:
+      name: pexpect
+      state: present

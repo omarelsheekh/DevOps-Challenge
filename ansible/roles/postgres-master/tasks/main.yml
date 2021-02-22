@@ -9,11 +9,6 @@
       state: started
       enabled: True
 
-- name: Make sure pexpect is installed
-  pip:
-      name: pexpect
-      state: present    
-      
 - name: Create a new database
   command: sudo -u postgres -s psql -c "create database {{ db_name }};"
   ignore_errors: yes

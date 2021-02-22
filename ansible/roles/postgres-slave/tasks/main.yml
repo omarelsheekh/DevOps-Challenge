@@ -1,10 +1,5 @@
 ---
 
-- name: Make sure pexpect is installed
-  pip:
-      name: pexpect
-      state: present
-
 - name: stop postgresql-12 service
   systemd:
       name: postgresql-12
