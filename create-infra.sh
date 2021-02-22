@@ -1,24 +1,24 @@
-# # Create Infra
-# echo "Creating infra on azure"
-# terraform init
-# terraform plan
-# terraform apply #-auto-approve
+# Create Infra
+echo "Creating infra on azure"
+terraform init
+terraform plan
+terraform apply #-auto-approve
 
-# # Grapping VMs IPs
-# echo "Grapping VMs IPs"
-# rm -f ansible/inventory
-# echo "[APPVM]" >> ansible/inventory
-# az vm show --resource-group $(terraform output -raw rg_name) \
-#     --name $(terraform output -raw app_vm_name) \
-#     -d --query [publicIps] -o tsv >> ansible/inventory
-# echo "[DBMasterVM]" >> ansible/inventory
-# az vm show --resource-group $(terraform output -raw rg_name) \
-#     --name $(terraform output -raw dbmaster_vm_name) \
-#     -d --query [publicIps] -o tsv >> ansible/inventory
-# echo "[DBSlaveVM]" >> ansible/inventory
-# az vm show --resource-group $(terraform output -raw rg_name) \
-#     --name $(terraform output -raw dbslave_vm_name) \
-#     -d --query [publicIps] -o tsv >> ansible/inventory
+# Grapping VMs IPs
+echo "Grapping VMs IPs"
+rm -f ansible/inventory
+echo "[APPVM]" >> ansible/inventory
+az vm show --resource-group $(terraform output -raw rg_name) \
+    --name $(terraform output -raw app_vm_name) \
+    -d --query [publicIps] -o tsv >> ansible/inventory
+echo "[DBMasterVM]" >> ansible/inventory
+az vm show --resource-group $(terraform output -raw rg_name) \
+    --name $(terraform output -raw dbmaster_vm_name) \
+    -d --query [publicIps] -o tsv >> ansible/inventory
+echo "[DBSlaveVM]" >> ansible/inventory
+az vm show --resource-group $(terraform output -raw rg_name) \
+    --name $(terraform output -raw dbslave_vm_name) \
+    -d --query [publicIps] -o tsv >> ansible/inventory
 
 # Run Ansible tasks
 echo "Run Ansible tasks"
