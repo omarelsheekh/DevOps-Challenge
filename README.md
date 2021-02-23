@@ -69,7 +69,7 @@ in this option we will deploy a k8s cluster using Rancher on 3 ubuntu 20.04 mach
 
 1. [Install Docker](https://docs.docker.com/engine/install/)
 2. [Install kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/)
-3. [create a new cluster using rancher](/rancher-cluster)
+3. [create a new cluster using rancher](/rancher-cluster.pdf)
 4. Install helm
 ```bash
 curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
