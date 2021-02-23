@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: halan-app
+  labels:
+    app: halan-app
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: halan-app
+  template:
+    metadata:
+      labels:
+        app: halan-app
+    spec:
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+              - key: app
+                operator: In
+                values:
+                - halan-app
+            topologyKey: "kubernetes.io/hostname"
+        podAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+              - key: app
+                operator: In
+                values:
+                - db
+            topologyKey: "kubernetes.io/hostname"
+      containers:
+      - name: halan-app
+        image: omarelsheekh/halan-app
+        # command: [ "sleep" ]
+        # args: [ "infinity" ]
+        ports: 
+        - containerPort: 5000
+        env:
+        - name: db_ip
+          value: postgresdb-postgresql
+        - name: db_username
+          value: {{ .Values.global.postgresql.postgresqlUsername }}
+        - name: db_name
+          value: {{ .Values.global.postgresql.postgresqlDatabase }}
+        - name: db_userpass
+          value: {{ .Values.global.postgresql.postgresqlPassword }}

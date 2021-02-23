@@ -1,0 +1,38 @@
+global:
+    postgresql:
+        postgresqlUsername: omar
+        postgresqlDatabase: tst
+        postgresqlPassword: password
+        replicationPassword: password
+replication:
+    enabled: true
+    readReplicas: 2
+postgresqlPostgresPassword: password
+persistence:
+    enabled: false
+primary:
+    podLabels:
+        app: db
+    affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+              - key: app
+                operator: In
+                values:
+                - db
+            topologyKey: "kubernetes.io/hostname"
+readReplicas:
+    podLabels:
+        app: db
+    affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+              - key: app
+                operator: In
+                values:
+                - db
+            topologyKey: "kubernetes.io/hostname"
