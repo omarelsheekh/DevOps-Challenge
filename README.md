@@ -67,10 +67,10 @@ in this option we will deploy a k8s cluster using Rancher on 3 ubuntu 20.04 mach
 - RancherSlave2
 ### Getting Started
 
-1. [Install Docker](https://docs.docker.com/engine/install/)
-2. [Install kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/)
+1. [Install Docker](https://docs.docker.com/engine/install/) on all machines
+2. [Install kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/) on machines you will run commands from
 3. [create a new cluster using rancher](/rancher-cluster.pdf)
-4. Install helm
+4. Install helm on machines have kubectl installed
 ```bash
 curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
 ```
@@ -80,7 +80,7 @@ git clone https://github.com/omarelsheekh/DevOps-Challenge
 ```
 6. move to halan-chart directory
 ```bash
-cd halan-task/halan-chart
+cd DevOps-Challenge/halan-chart
 ```
 7. setup postgresql db
 ```bash
@@ -114,13 +114,13 @@ halan-app-ingress   <none>   halan.omar.com   172.31.10.133,172.31.8.231   80   
 $ curl halan.omar.com/
 Halan ROCKS
 ```
-#### Destroy everything whenever yoy want
+#### Destroy everything whenever you want
 ```bash
-docker stop $(docker ps -aq)
-docker system prune -f
-docker volume rm $(docker volume ls -q)
-docker image rm $(docker image ls -q)
-rm -rf /etc/ceph \
+$ docker stop $(docker ps -aq)
+$ docker system prune -f
+$ docker volume rm $(docker volume ls -q)
+$ docker image rm $(docker image ls -q)
+$ sudo rm -rf /etc/ceph \
        /etc/cni \
        /etc/kubernetes \
        /opt/cni \
