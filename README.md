@@ -4,11 +4,11 @@ This is a solution for a [DevOps Challenge](/DevOps-Challenge.pdf)
 - #### [Option 1](#option1)
 - #### [Option 2](#option2)
 ## <a name="option1">Option #1</a>
-in this option i have created 3 VMs: 
+in this option we will deploy 3 VMs: 
 - App VM
 - MasterDB VM
 - SlaveDB VM
-#### and deployed them all on Microsoft Azure using Terraform then configured them using Ansible
+#### on Microsoft Azure using Terraform then configured them using Ansible
 
 ### Getting Started
 
@@ -61,3 +61,56 @@ cd DevOps-Challenge
 ./destroy-infra.sh
 ```
 ## <a name="option2">Option #2</a>
+in this option we will deploy a k8s cluster using Rancher on 3 ubuntu 20.04 machines: 
+- RancherMaster
+- RancherSlave1
+- RancherSlave2
+### Getting Started
+
+1. [Install Docker](https://docs.docker.com/engine/install/)
+2. [Install kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/)
+3. [create a new cluster using rancher](/rancher-cluster)
+4. Install helm
+```bash
+curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
+```
+5. Clone this repo
+```bash
+git clone https://github.com/omarelsheekh/DevOps-Challenge
+```
+6. move to halan-chart directory
+```bash
+cd halan-task/halan-chart
+```
+7. setup postgresql db
+```bash
+$ helm repo add bitnami https://charts.bitnami.com/bitnami
+$ helm install postgresdb bitnami/postgresql --values values.yaml
+```
+8. make sure that db pods is running
+```bash
+$ kubectl get pod -o wide
+NAME                              READY   STATUS    RESTARTS   AGE     IP              NODE
+postgresdb-postgresql-primary-0   1/1     Running   0          5m18s   10.42.194.1     rancherslave2
+postgresdb-postgresql-read-0      1/1     Running   0          2m36s   10.42.61.195    rancherslave1
+postgresdb-postgresql-read-1      1/1     Running   0          106s    10.42.143.139   ranchermaster
+```
+9. Run the app helm chart
+```bash
+helm install app .
+```
+10. Verify the IP addresses is set to the ingress:
+```bash
+$ kubectl get ingress
+NAME                CLASS    HOSTS            ADDRESS                      PORTS   AGE
+halan-app-ingress   <none>   halan.omar.com   172.31.10.133,172.31.8.231   80      106s
+```
+11. Add the following line to the bottom of the ```/etc/hosts``` file.
+```bash
+172.31.10.133 halan.omar.com
+```
+12. Verify that the Ingress controller is directing traffic
+```bash
+$ curl halan.omar.com/
+Halan ROCKS
+```
