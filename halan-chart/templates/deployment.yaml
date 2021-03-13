@@ -42,7 +42,7 @@ spec:
         - containerPort: 5000
         env:
         - name: db_ip
-          value: postgresdb-postgresql
+          value: {{ .Release.Name }}-postgresql
         - name: db_username
           value: {{ .Values.global.postgresql.postgresqlUsername }}
         - name: db_name
