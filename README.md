@@ -82,34 +82,21 @@ git clone https://github.com/omarelsheekh/DevOps-Challenge
 ```bash
 cd DevOps-Challenge/halan-chart
 ```
-7. setup postgresql db
-```bash
-$ helm repo add bitnami https://charts.bitnami.com/bitnami
-$ helm install postgresdb bitnami/postgresql --values values.yaml
-```
-8. make sure that db pods is running
-```bash
-$ kubectl get pod -o wide
-NAME                              READY   STATUS    RESTARTS   AGE     IP              NODE
-postgresdb-postgresql-primary-0   1/1     Running   0          5m18s   10.42.194.1     rancherslave2
-postgresdb-postgresql-read-0      1/1     Running   0          2m36s   10.42.61.195    rancherslave1
-postgresdb-postgresql-read-1      1/1     Running   0          106s    10.42.143.139   ranchermaster
-```
-9. Run the app helm chart
+7. Run the app helm chart
 ```bash
 helm install app .
 ```
-10. Verify the IP addresses is set to the ingress:
+8. Verify the IP addresses is set to the ingress:
 ```bash
 $ kubectl get ingress
 NAME                CLASS    HOSTS            ADDRESS                      PORTS   AGE
 halan-app-ingress   <none>   halan.omar.com   172.31.10.133,172.31.8.231   80      106s
 ```
-11. Add the following line to the bottom of the ```/etc/hosts``` file.
+9. Add the following line to the bottom of the ```/etc/hosts``` file.
 ```bash
 172.31.10.133 halan.omar.com
 ```
-12. Verify that the Ingress controller is directing traffic
+10. Verify that the Ingress controller is directing traffic
 ```bash
 $ curl halan.omar.com/
 Halan ROCKS
