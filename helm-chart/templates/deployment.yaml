@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-app
+  labels:
+    app: {{ .Release.Name }}-app
+spec:
+  replicas: {{ .Values.app.replicas }}
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}-app
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}-app
+    spec:
+      {{- if .Values.affinity -}}
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+              - key: app
+                operator: In
+                values:
+                - {{ .Release.Name }}-app
+            topologyKey: "kubernetes.io/hostname"
+        podAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+              - key: app
+                operator: In
+                values:
+                - db
+            topologyKey: "kubernetes.io/hostname"
+      {{ end }}
+      containers:
+      - name: {{ .Release.Name }}-app
+        image: {{ .Values.app.image }}
+        # command: [ "sleep" ]
+        # args: [ "infinity" ]
+        ports: 
+        - containerPort: 5000
+        env:
+        - name: db_ip
+          value: {{ .Release.Name }}-postgresql
+        - name: db_username
+          value: {{ .Values.postgresql.postgresqlUsername }}
+        - name: db_name
+          value: {{ .Values.postgresql.postgresqlDatabase }}
+        - name: db_userpass
+          value: {{ .Values.postgresql.postgresqlPassword }}

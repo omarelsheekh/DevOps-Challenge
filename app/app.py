@@ -2,17 +2,20 @@ from flask import Flask,request,jsonify
 from flask_sqlalchemy import SQLAlchemy
 import os, time
 
+DB_TYPE=os.getenv('db_type', 'postgres')
 DB_IP=os.getenv('db_ip', '10.0.0.11')
 DB_USERNAME=os.getenv('db_username', 'db_user')
-DB_NAME=os.getenv('db_name', 'halanapp')
+DB_NAME=os.getenv('db_name', 'test_db')
 DB_USERPASS=os.getenv('db_userpass', 'db_pass')
 DB_PORT=os.getenv('db_port', 5432)
 
 app=Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://{username}:{passwd}@{host_ip}:{db_port}/{db_name}'.format(
-    username=DB_USERNAME, passwd=DB_USERPASS, host_ip=DB_IP, db_name=DB_NAME, db_port=DB_PORT
-)
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////tmp/test.db'
+if DB_TYPE=='postgres':
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://{username}:{passwd}@{host_ip}:{db_port}/{db_name}'.format(
+        username=DB_USERNAME, passwd=DB_USERPASS, host_ip=DB_IP, db_name=DB_NAME, db_port=DB_PORT
+    )
+elif DB_TYPE=='sqlite':
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////tmp/test.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS']=False
 db=SQLAlchemy(app)
 
@@ -37,7 +40,7 @@ def index():
             return 'n*n = {}'.format(i*i)
         except:
             pass
-    return 'Halan ROCKS'
+    return 'Hello World, I\'m Omar'
 
 @app.route('/ip')
 def store_ip():

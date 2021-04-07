@@ -5,12 +5,12 @@ variable "resource_group" {
 
 variable "env" {
   description = "The name of the enviroment tag."
-  default = "halan task"
+  default = "DevOps-Challenge"
 }
 
 variable "location" {
   description = "The location/region where the resources are created."
-  default     = "uksouth"
+  default     = "eastus"
 }
 
 variable "address_space" {
@@ -30,7 +30,7 @@ variable "virtual_network_name" {
 
 variable "db_name" {
   description = "Specifies the DB name."
-  default     = "halanapp"
+  default     = "test_db"
 }
 
 variable "db_username" {

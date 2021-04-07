@@ -1,0 +1,39 @@
+app:
+    image: nginx
+    affinity: true
+    replicas: 1
+postgresql:
+    affinity: &dbAffinity
+        podAntiAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+        - labelSelector:
+            matchExpressions:
+            - key: app
+              operator: In
+              values:
+              - db
+            topologyKey: "kubernetes.io/hostname"
+    replication:
+        enabled: true
+        readReplicas: 1
+    postgresqlPostgresPassword: password
+    persistence:
+        enabled: false
+    postgresqlUsername: omar
+    postgresqlDatabase: tst
+    postgresqlPassword: password
+    replication:
+        enabled: true
+        readReplicas: 1
+        user: repl_user
+        password: repl_password
+    persistence:
+        enabled: false
+    primary:
+        podLabels:
+            app: db
+        << : *dbAffinity
+    readReplicas:
+        podLabels:
+            app: db
+        << : *dbAffinity
