@@ -11,12 +11,9 @@
 
 - name: Install postgresql packages
   dnf:
-      name: "{{ item }}"
+      name: ['postgresql12', 'postgresql12-server']
       state: present
       disable_gpg_check: yes
-  with_items:
-      - postgresql12
-      - postgresql12-server
 
 - name: Make sure pexpect is installed
   pip:

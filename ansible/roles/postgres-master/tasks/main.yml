@@ -30,12 +30,12 @@
           (?i)password: "{{ db_replicapass }}"
           (?i)again: "{{ db_replicapass }}"
 
-- name: add a lines to the conf file
+- name: add a line to the conf file
   lineinfile:
       dest: /var/lib/pgsql/12/data/pg_hba.conf
       line: host {{ db_name }} {{ db_username }} {{ subnet_prefix }} password
 
-- name: add a second lines to the conf file
+- name: add a second line to the conf file
   lineinfile:
       dest: /var/lib/pgsql/12/data/pg_hba.conf
       line: host replication replicator {{ dbslave_vm_private_ip }}/24 md5

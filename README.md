@@ -14,7 +14,7 @@
 - #### [ Kubernetes deployment ](#option2)
 - #### [ On-premise deployment ](#option3)
 ## <a name="option1"> Using Docker</a>
-#### in this option we will 
+#### in this option we will use sqlite database
 1. [Install Docker](https://docs.docker.com/engine/install/)
 2. Clone this repo
 ```bash

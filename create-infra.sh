@@ -2,7 +2,7 @@
 echo "Creating infra on azure"
 terraform init
 terraform plan
-terraform apply #-auto-approve
+terraform apply -auto-approve
 
 # Grapping VMs IPs
 echo "Grapping VMs IPs"
@@ -21,6 +21,7 @@ az vm show --resource-group $(terraform output -raw rg_name) \
     -d --query [publicIps] -o tsv >> ansible/inventory
 
 # Run Ansible tasks
+export ANSIBLE_HOST_KEY_CHECKING=False
 echo "Run Ansible tasks"
 chmod 400 ansible/private_key.pem
 ansible-playbook -i ansible/inventory --private-key ansible/private_key.pem ansible/dbmaster_vm.yml -e " \

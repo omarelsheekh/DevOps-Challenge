@@ -10,12 +10,8 @@
 
 - name: install docker
   yum:
-    name: "{{ item }}"
-  with_items:
-    - docker-ce
-    - docker-ce-cli
-    - containerd.io
-
+    name: ['docker-ce', 'docker-ce-cli', 'containerd.io']
+  
 - name: Make sure docker is running
   ansible.builtin.systemd:
       state: started
@@ -35,14 +31,20 @@
       state: present
       
 - name: run docker container
-  docker_container:
-      name: myapplication
-      image: webapp
-      restart: yes
-      ports:
-      - "80:5000"
-      env:
-        db_ip: "{{ db_ip }}" 
-        db_name: "{{ db_name }}" 
-        db_username: "{{ db_username }}" 
-        db_userpass: "{{ db_userpass }}" 
+  shell: |
+    docker run -dp 80:5000 \
+    -e db_ip={{ db_ip }} \
+    -e db_name={{ db_name }} \
+    -e db_username={{ db_username }} \
+    -e db_userpass={{ db_userpass }} webapp
+  # docker_container:
+  #     name: myapplication
+  #     image: webapp
+  #     restart: yes
+  #     ports:
+  #     - "80:5000"
+  #     env:
+  #       db_ip: "{{ db_ip }}" 
+  #       db_name: "{{ db_name }}" 
+  #       db_username: "{{ db_username }}" 
+  #       db_userpass: "{{ db_userpass }}" 
